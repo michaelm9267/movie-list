@@ -1,22 +1,31 @@
 import React, { useEffect, useState } from "react";
-import movieData from "../movies.json";
 
-const MovieList = () => {
+const MovieList = ({ searchTerm }) => {
   const [movies, setMovies] = useState([]);
+
   useEffect(() => {
-    setMovies(movieData.movie);
+    fetch('http://localhost:8080/movies')
+    .then(res => res.json())
+    .then(data => {
+      setMovies(data)
+      console.log(data)
+    })
   }, []);
+
+  const filteredMovies = movies.filter(movie =>
+    movie.title.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <div>
-      {movies.map((el, index) => (
+      {filteredMovies.map((movie, index) => (
         <div key={index}>
-            <h3>{el.title}</h3>
-            <img src={el.poster} alt={el.title}/>
-            <p>{el.summary}</p>
-            <p>{el.cast}</p>
-            <p>{el.genre}</p>
-            <p>{el.releaseDate}</p>
+            <h3>{movie.title}</h3>
+            <img src={movie.poster} alt={movie.title}/>
+            <p>{movie.summary}</p>
+            <p>{movie.cast}</p>
+            <p>{movie.genre}</p>
+            <p>{movie.releaseDate}</p>
         </div>
       ))}
     </div>
